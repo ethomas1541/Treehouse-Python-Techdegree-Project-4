@@ -110,7 +110,13 @@ def get_by_id(ID):
 
     Prints out information on a given product after the user enters said product's unique product ID.
 
-    Index errors are handled inside the function. Value errors are handled externally.
+    Index and value errors are handled.
+    
+    FIXED:
+    
+    I got "Needs Work" for sending the user all the way back to the main menu if their input was invalid.
+    The function will now return True or None as an indicator of the input's validity, which will determine
+    if the V-option's new loop needs to re-run or not.
     """
     
     try:
@@ -119,6 +125,7 @@ def get_by_id(ID):
         if product_at_ID:
             price = str(product_at_ID.product_price)
             print(f"\nItem ID {true_ID}:\n{product_at_ID.product_name}\nIn stock:\t\t{product_at_ID.product_quantity}\nPrice:\t\t\t{cents_to_dollars(price)}\nRecord last updated:\t{datetime.datetime.strftime(product_at_ID.date_updated, '%m/%d/%Y')}")
+            return True
         else:
             raise ValueError
     except IndexError:
@@ -174,13 +181,17 @@ if __name__ == "__main__":
     while not option == "q":
         option = input("\nV) View a record using its ID number\nA) Add a product to the inventory database\nB) Back up the database to a CSV file\nQ) Quit\n\nWhat would you like to do? ").lower().strip()
         if option == "v":
-            get_by_id(input("\nProduct ID number: "))
+
+            # New loop to continue asking for user's input until it becomes usable by the program
+            
+            while not get_by_id(input("\nProduct ID number: ")):
+                pass
         elif option == "a":
             add_record()
         elif option == "b":
             backup()
         elif option != "q":
-            print("\nPlease enter V, A or B. All actions are described in the following menu:")
+            print("\nPlease enter V, A, B or Q. All actions are described in the following menu:")
 
     # Q OPTION
     
